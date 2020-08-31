@@ -337,10 +337,10 @@
 // then extrude some filament every couple of SECONDS.
 //#define EXTRUDER_RUNOUT_PREVENT
 #if ENABLED(EXTRUDER_RUNOUT_PREVENT)
-#define EXTRUDER_RUNOUT_MINTEMP 190
-#define EXTRUDER_RUNOUT_SECONDS 30
-#define EXTRUDER_RUNOUT_SPEED 1500 // (mm/m)
-#define EXTRUDER_RUNOUT_EXTRUDE 5  // (mm)
+  #define EXTRUDER_RUNOUT_MINTEMP 190
+  #define EXTRUDER_RUNOUT_SECONDS 30
+  #define EXTRUDER_RUNOUT_SPEED 1500  // (mm/min)
+  #define EXTRUDER_RUNOUT_EXTRUDE 5   // (mm)
 #endif
 
 /**
@@ -689,7 +689,7 @@
    * Danger: Don't activate 5V mode unless attached to a 5V-tolerant controller!
    * V3.0 or 3.1: Set default mode to 5V mode at Marlin startup.
    * If disabled, OD mode is the hard-coded default on 3.0
-   * On startup, Marlin will compare its eeprom to this vale. If the selected mode
+   * On startup, Marlin will compare its eeprom to this value. If the selected mode
    * differs, a mode set eeprom write will be completed at initialization.
    * Use the option below to force an eeprom write to a V3.1 probe regardless.
    */
@@ -781,7 +781,7 @@
 #endif
 
 //
-// Add the G35 command to read bed corners to help adjust screws.
+// Add the G35 command to read bed corners to help adjust screws. Requires a bed probe.
 //
 //#define ASSISTED_TRAMMING
 #if ENABLED(ASSISTED_TRAMMING)
@@ -827,24 +827,30 @@
 #define INVERT_Z_STEP_PIN false
 #define INVERT_E_STEP_PIN false
 
-// Default stepper release if idle. Set to 0 to deactivate.
-// Steppers will shut down DEFAULT_STEPPER_DEACTIVE_TIME seconds after the last move when DISABLE_INACTIVE_? is true.
-// Time can be set by M18 and M84.
+/**
+ * Idle Stepper Shutdown
+ * Set DISABLE_INACTIVE_? 'true' to shut down axis steppers after an idle period.
+ * The Deactive Time can be overridden with M18 and M84. Set to 0 for No Timeout.
+ */
 #define DEFAULT_STEPPER_DEACTIVE_TIME 120
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
-#define DISABLE_INACTIVE_Z true // Set to false if the nozzle will fall down on your printed part when print has finished.
+#define DISABLE_INACTIVE_Z true  // Set 'false' if the nozzle could fall onto your printed part!
 #define DISABLE_INACTIVE_E true
 
-#define DEFAULT_MINIMUMFEEDRATE 0.0 // minimum feedrate
-#define DEFAULT_MINTRAVELFEEDRATE 0.0
+// If the Nozzle or Bed falls when the Z stepper is disabled, set its resting position here.
+//#define Z_AFTER_DEACTIVATE Z_HOME_POS
 
 //#define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
 
-// Minimum time that a segment needs to take if the buffer is emptied
-#define DEFAULT_MINSEGMENTTIME 20000 // (µs)
+// Default Minimum Feedrates for printing and travel moves
+#define DEFAULT_MINIMUMFEEDRATE       0.0     // (mm/s) Minimum feedrate. Set with M205 S.
+#define DEFAULT_MINTRAVELFEEDRATE     0.0     // (mm/s) Minimum travel feedrate. Set with M205 T.
 
-// Slow down the machine if the look ahead buffer is (by default) half full.
+// Minimum time that a segment needs to take as the buffer gets emptied
+#define DEFAULT_MINSEGMENTTIME        20000   // (µs) Set with M205 B.
+
+// Slow down the machine if the lookahead buffer is (by default) half full.
 // Increase the slowdown divisor for larger buffer sizes.
 #define SLOWDOWN
 #if ENABLED(SLOWDOWN)
@@ -892,15 +898,15 @@
 // Measure the Z backlash when probing (G29) and set with "M425 Z"
 #define MEASURE_BACKLASH_WHEN_PROBING
 
-#if ENABLED(MEASURE_BACKLASH_WHEN_PROBING)
-// When measuring, the probe will move up to BACKLASH_MEASUREMENT_LIMIT
-// mm away from point of contact in BACKLASH_MEASUREMENT_RESOLUTION
-// increments while checking for the contact to be broken.
-#define BACKLASH_MEASUREMENT_LIMIT 0.5                   // (mm)
-#define BACKLASH_MEASUREMENT_RESOLUTION 0.005            // (mm)
-#define BACKLASH_MEASUREMENT_FEEDRATE Z_PROBE_SPEED_SLOW // (mm/m)
-#endif
-#endif
+    #if ENABLED(MEASURE_BACKLASH_WHEN_PROBING)
+      // When measuring, the probe will move up to BACKLASH_MEASUREMENT_LIMIT
+      // mm away from point of contact in BACKLASH_MEASUREMENT_RESOLUTION
+      // increments while checking for the contact to be broken.
+      #define BACKLASH_MEASUREMENT_LIMIT       0.5   // (mm)
+      #define BACKLASH_MEASUREMENT_RESOLUTION  0.005 // (mm)
+      #define BACKLASH_MEASUREMENT_FEEDRATE    Z_PROBE_SPEED_SLOW // (mm/min)
+    #endif
+  #endif
 #endif
 
 /**
@@ -1052,15 +1058,12 @@
 // @section lcd
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
-#define MANUAL_FEEDRATE            \
-   {                               \
-      50 * 60, 50 * 60, 4 * 60, 60 \
-   }                              // Feedrates for manual moves along X, Y, Z, E from panel
-#define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
-#if ENABLED(ULTIPANEL)
-#define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
-#define ULTIPANEL_FEEDMULTIPLY  // Encoder sets the feedrate multiplier on the Status Screen
-#endif
+  #define MANUAL_FEEDRATE { 50*60, 50*60, 4*60, 2*60 } // (mm/min) Feedrates for manual moves along X, Y, Z, E from panel
+  #define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
+  #if ENABLED(ULTIPANEL)
+    #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
+    #define ULTIPANEL_FEEDMULTIPLY  // Encoder sets the feedrate multiplier on the Status Screen
+  #endif
 #endif
 
 // Change values more rapidly when the encoder is rotated faster
@@ -1167,7 +1170,7 @@
 
 //#define MENU_ADDAUTOSTART               // Add a menu option to run auto#.g files
 
-#define EVENT_GCODE_SD_STOP "G28XY" // G-code to run on Stop Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_ABORT "G28XY"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
 
 #if ENABLED(PRINTER_EVENT_LEDS)
 #define PE_LEDS_COMPLETED_TIME (30 * 60) // (seconds) Time to keep the LED "done" color before restoring normal illumination
@@ -1181,23 +1184,23 @@
    * an option on the LCD screen to continue the print from the last-known
    * point in the file.
    */
-#define POWER_LOSS_RECOVERY
-#if ENABLED(POWER_LOSS_RECOVERY)
-#define PLR_ENABLED_DEFAULT false // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
-//#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
-//#define POWER_LOSS_ZRAISE       2 // (mm) Z axis raise on resume (on power loss with UPS)
-//#define POWER_LOSS_PIN         44 // Pin to detect power loss. Set to -1 to disable default pin on boards without module.
-//#define POWER_LOSS_STATE     HIGH // State of pin indicating power loss
-//#define POWER_LOSS_PULL           // Set pullup / pulldown as appropriate
-//#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
-//#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
+  #define POWER_LOSS_RECOVERY
+  #if ENABLED(POWER_LOSS_RECOVERY)
+    #define PLR_ENABLED_DEFAULT   true // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
+    //#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
+    //#define POWER_LOSS_ZRAISE       2 // (mm) Z axis raise on resume (on power loss with UPS)
+    //#define POWER_LOSS_PIN         44 // Pin to detect power loss. Set to -1 to disable default pin on boards without module.
+    //#define POWER_LOSS_STATE     HIGH // State of pin indicating power loss
+    //#define POWER_LOSS_PULL           // Set pullup / pulldown as appropriate
+    //#define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
+    //#define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
 
-// Without a POWER_LOSS_PIN the following option helps reduce wear on the SD card,
-// especially with "vase mode" printing. Set too high and vases cannot be continued.
-#define POWER_LOSS_MIN_Z_CHANGE 0.05 // (mm) Minimum Z change before saving power-loss data
-#endif
+    // Without a POWER_LOSS_PIN the following option helps reduce wear on the SD card,
+    // especially with "vase mode" printing. Set too high and vases cannot be continued.
+    #define POWER_LOSS_MIN_Z_CHANGE 0.05 // (mm) Minimum Z change before saving power-loss data
+  #endif
 
-/**
+  /**
    * Sort SD file listings in alphabetical order.
    *
    * With this option enabled, items on SD cards will be sorted
@@ -1545,15 +1548,16 @@
 #endif
 
 //
-// FSMC Graphical TFT
+// FSMC / SPI Graphical TFT
 //
-#if ENABLED(FSMC_GRAPHICAL_TFT)
-//#define TFT_MARLINUI_COLOR 0xFFFF // White
-//#define TFT_MARLINBG_COLOR 0x0000 // Black
-//#define TFT_DISABLED_COLOR 0x0003 // Almost black
-//#define TFT_BTCANCEL_COLOR 0xF800 // Red
-//#define TFT_BTARROWS_COLOR 0xDEE6 // 11011 110111 00110 Yellow
-//#define TFT_BTOKMENU_COLOR 0x145F // 00010 100010 11111 Cyan
+#if TFT_SCALED_DOGLCD
+  //#define GRAPHICAL_TFT_ROTATE_180
+  //#define TFT_MARLINUI_COLOR 0xFFFF // White
+  //#define TFT_MARLINBG_COLOR 0x0000 // Black
+  //#define TFT_DISABLED_COLOR 0x0003 // Almost black
+  //#define TFT_BTCANCEL_COLOR 0xF800 // Red
+  //#define TFT_BTARROWS_COLOR 0xDEE6 // 11011 110111 00110 Yellow
+  //#define TFT_BTOKMENU_COLOR 0x145F // 00010 100010 11111 Cyan
 #endif
 
 //
@@ -2015,33 +2019,33 @@
    * Retract and prime filament on tool-change to reduce
    * ooze and stringing and to get cleaner transitions.
    */
-//#define TOOLCHANGE_FILAMENT_SWAP
-#if ENABLED(TOOLCHANGE_FILAMENT_SWAP)
-// Load / Unload
-#define TOOLCHANGE_FS_LENGTH 12                 // (mm) Load / Unload length
-#define TOOLCHANGE_FS_EXTRA_RESUME_LENGTH 0     // (mm) Extra length for better restart, fine tune by LCD/Gcode)
-#define TOOLCHANGE_FS_RETRACT_SPEED (50 * 60)   // (mm/m) (Unloading)
-#define TOOLCHANGE_FS_UNRETRACT_SPEED (25 * 60) // (mm/m) (On SINGLENOZZLE or Bowden loading must be slowed down)
+  //#define TOOLCHANGE_FILAMENT_SWAP
+  #if ENABLED(TOOLCHANGE_FILAMENT_SWAP)
+    // Load / Unload
+    #define TOOLCHANGE_FS_LENGTH              12  // (mm) Load / Unload length
+    #define TOOLCHANGE_FS_EXTRA_RESUME_LENGTH  0  // (mm) Extra length for better restart, fine tune by LCD/Gcode)
+    #define TOOLCHANGE_FS_RETRACT_SPEED   (50*60) // (mm/min) (Unloading)
+    #define TOOLCHANGE_FS_UNRETRACT_SPEED (25*60) // (mm/min) (On SINGLENOZZLE or Bowden loading must be slowed down)
 
-// Longer prime to clean out a SINGLENOZZLE
-#define TOOLCHANGE_FS_EXTRA_PRIME 0          // (mm) Extra priming length
-#define TOOLCHANGE_FS_PRIME_SPEED (4.6 * 60) // (mm/m) Extra priming feedrate
-#define TOOLCHANGE_FS_WIPE_RETRACT 0         // (mm/m) Retract before cooling for less stringing, better wipe, etc.
+    // Longer prime to clean out a SINGLENOZZLE
+    #define TOOLCHANGE_FS_EXTRA_PRIME          0  // (mm) Extra priming length
+    #define TOOLCHANGE_FS_PRIME_SPEED    (4.6*60) // (mm/min) Extra priming feedrate
+    #define TOOLCHANGE_FS_WIPE_RETRACT         0  // (mm/min) Retract before cooling for less stringing, better wipe, etc.
 
-// Cool after prime to reduce stringing
-#define TOOLCHANGE_FS_FAN -1        // Fan index or -1 to skip
-#define TOOLCHANGE_FS_FAN_SPEED 255 // 0-255
-#define TOOLCHANGE_FS_FAN_TIME 10   // (seconds)
+    // Cool after prime to reduce stringing
+    #define TOOLCHANGE_FS_FAN                 -1  // Fan index or -1 to skip
+    #define TOOLCHANGE_FS_FAN_SPEED          255  // 0-255
+    #define TOOLCHANGE_FS_FAN_TIME            10  // (seconds)
 
-// Swap uninitialized extruder with TOOLCHANGE_FS_PRIME_SPEED for all lengths (recover + prime)
-// (May break filament if not retracted beforehand.)
-//#define TOOLCHANGE_FS_INIT_BEFORE_SWAP
+    // Swap uninitialized extruder with TOOLCHANGE_FS_PRIME_SPEED for all lengths (recover + prime)
+    // (May break filament if not retracted beforehand.)
+    //#define TOOLCHANGE_FS_INIT_BEFORE_SWAP
 
-// Prime on the first T0 (If other, TOOLCHANGE_FS_INIT_BEFORE_SWAP applied)
-// Enable it (M217 V[0/1]) before printing, to avoid unwanted priming on host connect
-//#define TOOLCHANGE_FS_PRIME_FIRST_USED
+    // Prime on the first T0 (If other, TOOLCHANGE_FS_INIT_BEFORE_SWAP applied)
+    // Enable it (M217 V[0/1]) before printing, to avoid unwanted priming on host connect
+    //#define TOOLCHANGE_FS_PRIME_FIRST_USED
 
-/**
+    /**
      * Tool Change Migration
      * This feature provides G-code and LCD options to switch tools mid-print.
      * All applicable tool properties are migrated so the print can continue.
@@ -2059,16 +2063,13 @@
    * Position to park head during tool change.
    * Doesn't apply to SWITCHING_TOOLHEAD, DUAL_X_CARRIAGE, or PARKING_EXTRUDER
    */
-//#define TOOLCHANGE_PARK
-#if ENABLED(TOOLCHANGE_PARK)
-#define TOOLCHANGE_PARK_XY           \
-   {                                 \
-      X_MIN_POS + 10, Y_MIN_POS + 10 \
-   }
-#define TOOLCHANGE_PARK_XY_FEEDRATE 6000 // (mm/m)
-//#define TOOLCHANGE_PARK_X_ONLY          // X axis only move
-//#define TOOLCHANGE_PARK_Y_ONLY          // Y axis only move
-#endif
+  //#define TOOLCHANGE_PARK
+  #if ENABLED(TOOLCHANGE_PARK)
+    #define TOOLCHANGE_PARK_XY    { X_MIN_POS + 10, Y_MIN_POS + 10 }
+    #define TOOLCHANGE_PARK_XY_FEEDRATE 6000  // (mm/min)
+    //#define TOOLCHANGE_PARK_X_ONLY          // X axis only move
+    //#define TOOLCHANGE_PARK_Y_ONLY          // Y axis only move
+  #endif
 #endif // EXTRUDERS > 1
 
 /**
@@ -2891,9 +2892,9 @@
 //#define SPINDLE_FEATURE
 //#define LASER_FEATURE
 #if EITHER(SPINDLE_FEATURE, LASER_FEATURE)
-#define SPINDLE_LASER_ACTIVE_HIGH false // Set to "true" if the on/off function is active HIGH
-#define SPINDLE_LASER_PWM true          // Set to "true" if your controller supports setting the speed/power
-#define SPINDLE_LASER_PWM_INVERT false  // Set to "true" if the speed/power goes up when you want it to go slower
+  #define SPINDLE_LASER_ACTIVE_STATE    LOW    // Set to "HIGH" if the on/off function is active HIGH
+  #define SPINDLE_LASER_PWM             true   // Set to "true" if your controller supports setting the speed/power
+  #define SPINDLE_LASER_PWM_INVERT      false  // Set to "true" if the speed/power goes up when you want it to go slower
 
 #define SPINDLE_LASER_FREQUENCY 2500 // (Hz) Spindle/laser frequency (only on supported HALs: AVR and LPC)
 
@@ -3191,7 +3192,7 @@
 //#define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
 
 // Enable and set a (default) feedrate for all G0 moves
-//#define G0_FEEDRATE 3000 // (mm/m)
+//#define G0_FEEDRATE 3000 // (mm/min)
 #ifdef G0_FEEDRATE
 //#define VARIABLE_G0_FEEDRATE // The G0 feedrate is set by F in G0 motion mode
 #endif
@@ -3521,13 +3522,11 @@
 #if ENABLED(PRUSA_MMU2_S_MODE)
 #define MMU2_C0_RETRY 5 // Number of retries (total time = timeout*retries)
 
-#define MMU2_CAN_LOAD_FEEDRATE 800 // (mm/m)
-#define MMU2_CAN_LOAD_SEQUENCE         \
-   {0.1, MMU2_CAN_LOAD_FEEDRATE},      \
-       {60.0, MMU2_CAN_LOAD_FEEDRATE}, \
-   {                                   \
-      -52.0, MMU2_CAN_LOAD_FEEDRATE    \
-   }
+    #define MMU2_CAN_LOAD_FEEDRATE 800    // (mm/min)
+    #define MMU2_CAN_LOAD_SEQUENCE \
+      {  0.1, MMU2_CAN_LOAD_FEEDRATE }, \
+      {  60.0, MMU2_CAN_LOAD_FEEDRATE }, \
+      { -52.0, MMU2_CAN_LOAD_FEEDRATE }
 
 #define MMU2_CAN_LOAD_RETRACT 6.0   // (mm) Keep under the distance between Load Sequence values
 #define MMU2_CAN_LOAD_DEVIATION 0.8 // (mm) Acceptable deviation

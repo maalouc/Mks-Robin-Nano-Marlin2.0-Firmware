@@ -240,8 +240,8 @@ void lv_draw_set(void) {
     lv_obj_set_event_cb_mks(buMotorOff, event_handler, ID_S_MOTOR_OFF, NULL, 0);
     
     #if HAS_SUICIDE
-    lv_imgbtn_set_src(buMotorOff, LV_BTN_STATE_REL, "F:/bmp_Mamual.bin");
-    lv_imgbtn_set_src(buMotorOff, LV_BTN_STATE_PR, "F:/bmp_Mamual.bin");
+    lv_imgbtn_set_src(buMotorOff, LV_BTN_STATE_REL, "F:/bmp_manual_off.bin");
+    lv_imgbtn_set_src(buMotorOff, LV_BTN_STATE_PR, "F:/bmp_manual_off.bin");
     #else
     lv_imgbtn_set_src(buMotorOff, LV_BTN_STATE_REL, "F:/bmp_function1.bin");
     lv_imgbtn_set_src(buMotorOff, LV_BTN_STATE_PR, "F:/bmp_function1.bin");
@@ -381,7 +381,9 @@ void lv_draw_set(void) {
 		lv_group_add_obj(g, buMotorOff);
 		lv_group_add_obj(g, buttonMachinePara);
 		lv_group_add_obj(g, buttonLanguage);
-	  	lv_group_add_obj(g, buttonWifi);
+		#if USE_WIFI_FUNCTION
+	  		lv_group_add_obj(g, buttonWifi);
+		#endif
 	  	lv_group_add_obj(g, buttonBack);
 	}
   #endif // BUTTONS_EXIST(EN1, EN2, ENC)

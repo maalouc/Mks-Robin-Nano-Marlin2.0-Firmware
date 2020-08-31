@@ -244,10 +244,10 @@
 
 #elif ENABLED(MAGNETIC_PARKING_EXTRUDER)
 
-#define MPE_FAST_SPEED 9000    // (mm/m) Speed for travel before last distance point
-#define MPE_SLOW_SPEED 4500    // (mm/m) Speed for last distance travel to park and couple
-#define MPE_TRAVEL_DISTANCE 10 // (mm) Last distance point
-#define MPE_COMPENSATION 0     // Offset Compensation -1 , 0 , 1 (multiplier) only for coupling
+    #define MPE_FAST_SPEED      9000      // (mm/min) Speed for travel before last distance point
+    #define MPE_SLOW_SPEED      4500      // (mm/min) Speed for last distance travel to park and couple
+    #define MPE_TRAVEL_DISTANCE   10      // (mm) Last distance point
+    #define MPE_COMPENSATION       0      // Offset Compensation -1 , 0 , 1 (multiplier) only for coupling
 
 #endif
 
@@ -279,35 +279,26 @@
 //#define ELECTROMAGNETIC_SWITCHING_TOOLHEAD
 
 #if ANY(SWITCHING_TOOLHEAD, MAGNETIC_SWITCHING_TOOLHEAD, ELECTROMAGNETIC_SWITCHING_TOOLHEAD)
-#define SWITCHING_TOOLHEAD_Y_POS 235     // (mm) Y position of the toolhead dock
-#define SWITCHING_TOOLHEAD_Y_SECURITY 10 // (mm) Security distance Y axis
-#define SWITCHING_TOOLHEAD_Y_CLEAR 60    // (mm) Minimum distance from dock for unobstructed X axis
-#define SWITCHING_TOOLHEAD_X_POS \
-  {                              \
-    215, 0                       \
-  } // (mm) X positions for parking the extruders
-#if ENABLED(SWITCHING_TOOLHEAD)
-#define SWITCHING_TOOLHEAD_SERVO_NR 2 // Index of the servo connector
-#define SWITCHING_TOOLHEAD_SERVO_ANGLES \
-  {                                     \
-    0, 180                              \
-  } // (degrees) Angles for Lock, Unlock
-#elif ENABLED(MAGNETIC_SWITCHING_TOOLHEAD)
-#define SWITCHING_TOOLHEAD_Y_RELEASE 5 // (mm) Security distance Y axis
-#define SWITCHING_TOOLHEAD_X_SECURITY \
-  {                                   \
-    90, 150                           \
-  } // (mm) Security distance X axis (T0,T1)
-//#define PRIME_BEFORE_REMOVE                       // Prime the nozzle before release from the dock
-#if ENABLED(PRIME_BEFORE_REMOVE)
-#define SWITCHING_TOOLHEAD_PRIME_MM 20           // (mm)   Extruder prime length
-#define SWITCHING_TOOLHEAD_RETRACT_MM 10         // (mm)   Retract after priming length
-#define SWITCHING_TOOLHEAD_PRIME_FEEDRATE 300    // (mm/m) Extruder prime feedrate
-#define SWITCHING_TOOLHEAD_RETRACT_FEEDRATE 2400 // (mm/m) Extruder retract feedrate
-#endif
-#elif ENABLED(ELECTROMAGNETIC_SWITCHING_TOOLHEAD)
-#define SWITCHING_TOOLHEAD_Z_HOP 2 // (mm) Z raise for switching
-#endif
+  #define SWITCHING_TOOLHEAD_Y_POS          235         // (mm) Y position of the toolhead dock
+  #define SWITCHING_TOOLHEAD_Y_SECURITY      10         // (mm) Security distance Y axis
+  #define SWITCHING_TOOLHEAD_Y_CLEAR         60         // (mm) Minimum distance from dock for unobstructed X axis
+  #define SWITCHING_TOOLHEAD_X_POS          { 215, 0 }  // (mm) X positions for parking the extruders
+  #if ENABLED(SWITCHING_TOOLHEAD)
+    #define SWITCHING_TOOLHEAD_SERVO_NR       2         // Index of the servo connector
+    #define SWITCHING_TOOLHEAD_SERVO_ANGLES { 0, 180 }  // (degrees) Angles for Lock, Unlock
+  #elif ENABLED(MAGNETIC_SWITCHING_TOOLHEAD)
+    #define SWITCHING_TOOLHEAD_Y_RELEASE      5         // (mm) Security distance Y axis
+    #define SWITCHING_TOOLHEAD_X_SECURITY   { 90, 150 } // (mm) Security distance X axis (T0,T1)
+    //#define PRIME_BEFORE_REMOVE                       // Prime the nozzle before release from the dock
+    #if ENABLED(PRIME_BEFORE_REMOVE)
+      #define SWITCHING_TOOLHEAD_PRIME_MM           20  // (mm)   Extruder prime length
+      #define SWITCHING_TOOLHEAD_RETRACT_MM         10  // (mm)   Retract after priming length
+      #define SWITCHING_TOOLHEAD_PRIME_FEEDRATE    300  // (mm/min) Extruder prime feedrate
+      #define SWITCHING_TOOLHEAD_RETRACT_FEEDRATE 2400  // (mm/min) Extruder retract feedrate
+    #endif
+  #elif ENABLED(ELECTROMAGNETIC_SWITCHING_TOOLHEAD)
+    #define SWITCHING_TOOLHEAD_Z_HOP          2         // (mm) Z raise for switching
+  #endif
 #endif
 
 /**
@@ -348,21 +339,21 @@
 //#define PSU_NAME "Power Supply"
 
 #if ENABLED(PSU_CONTROL)
-#define PSU_ACTIVE_HIGH false // Set 'false' for ATX, 'true' for X-Box
+  #define PSU_ACTIVE_STATE LOW      // Set 'LOW' for ATX, 'HIGH' for X-Box
 
-//#define PSU_DEFAULT_OFF         // Keep power off until enabled directly with M80
-//#define PSU_POWERUP_DELAY 250   // (ms) Delay for the PSU to warm up to full power
+  //#define PSU_DEFAULT_OFF         // Keep power off until enabled directly with M80
+  //#define PSU_POWERUP_DELAY 250   // (ms) Delay for the PSU to warm up to full power
 
-//#define AUTO_POWER_CONTROL      // Enable automatic control of the PS_ON pin
-#if ENABLED(AUTO_POWER_CONTROL)
-#define AUTO_POWER_FANS // Turn on PSU if fans need power
-#define AUTO_POWER_E_FANS
-#define AUTO_POWER_CONTROLLERFAN
-#define AUTO_POWER_CHAMBER_FAN
-//#define AUTO_POWER_E_TEMP        50 // (°C) Turn on PSU over this temperature
-//#define AUTO_POWER_CHAMBER_TEMP  30 // (°C) Turn on PSU over this temperature
-#define POWER_TIMEOUT 30
-#endif
+  //#define AUTO_POWER_CONTROL      // Enable automatic control of the PS_ON pin
+  #if ENABLED(AUTO_POWER_CONTROL)
+    #define AUTO_POWER_FANS         // Turn on PSU if fans need power
+    #define AUTO_POWER_E_FANS
+    #define AUTO_POWER_CONTROLLERFAN
+    #define AUTO_POWER_CHAMBER_FAN
+    //#define AUTO_POWER_E_TEMP        50 // (°C) Turn on PSU over this temperature
+    //#define AUTO_POWER_CHAMBER_TEMP  30 // (°C) Turn on PSU over this temperature
+    #define POWER_TIMEOUT 30
+  #endif
 #endif
 
 // @section temperature
@@ -827,7 +818,7 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-//#define CLASSIC_JERK
+#define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
 #define DEFAULT_XJERK 10.0
 #define DEFAULT_YJERK 10.0
@@ -1000,24 +991,34 @@
 //
 
 /**
- * Z Probe to nozzle (X,Y) offset, relative to (0, 0).
+ * Nozzle-to-Probe offsets { X, Y, Z }
  *
- * In the following example the X and Y offsets are both positive:
+ * - Use a caliper or ruler to measure the distance from the tip of
+ *   the Nozzle to the center-point of the Probe in the X and Y axes.
+ * - For the Z offset use your best known value and adjust at runtime.
+ * - Probe Offsets can be tuned at runtime with 'M851', LCD menus, babystepping, etc.
  *
- *   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+ * Assuming the typical work area orientation:
+ *  - Probe to RIGHT of the Nozzle has a Positive X offset
+ *  - Probe to LEFT  of the Nozzle has a Negative X offset
+ *  - Probe in BACK  of the Nozzle has a Positive Y offset
+ *  - Probe in FRONT of the Nozzle has a Negative Y offset
+ *
+ * Some examples:
+ *   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, -1 }   // Example "1"
+ *   #define NOZZLE_TO_PROBE_OFFSET {-10,  5, -1 }   // Example "2"
+ *   #define NOZZLE_TO_PROBE_OFFSET {  5, -5, -1 }   // Example "3"
+ *   #define NOZZLE_TO_PROBE_OFFSET {-15,-10, -1 }   // Example "4"
  *
  *     +-- BACK ---+
- *     |           |
- *   L |    (+) P  | R <-- probe (20,20)
- *   E |           | I
- *   F | (-) N (+) | G <-- nozzle (10,10)
- *   T |           | H
- *     |    (-)    | T
- *     |           |
+ *     |    [+]    |
+ *   L |        1  | R <-- Example "1" (right+,  back+)
+ *   E |  2        | I <-- Example "2" ( left-,  back+)
+ *   F |[-]  N  [+]| G <-- Nozzle
+ *   T |       3   | H <-- Example "3" (right+, front-)
+ *     | 4         | T <-- Example "4" ( left-, front-)
+ *     |    [-]    |
  *     O-- FRONT --+
- *   (0,0)
- *
- * Specify a Probe position as { X, Y, Z }
  */
 #define NOZZLE_TO_PROBE_OFFSET \
   {                            \
@@ -1028,8 +1029,8 @@
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
 #define PROBING_MARGIN 30
 
-// X and Y axis travel speed (mm/m) between probes
-#define XY_PROBE_SPEED 8000
+// X and Y axis travel speed (mm/min) between probes
+#define XY_PROBE_SPEED (133*60)
 
 // Feedrate (mm/m) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 //#define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
@@ -1107,19 +1108,19 @@
 #define Z_ENABLE_ON 0
 #define E_ENABLE_ON 0 // For all extruders
 
-// Disables axis stepper immediately when it's not being used.
+// Disable axis steppers immediately when they're not being stepped.
 // WARNING: When motors turn off there is a chance of losing position accuracy!
 #define DISABLE_X false
 #define DISABLE_Y false
 #define DISABLE_Z false
 
-// Warn on display about possibly reduced accuracy
+// Turn off the display blinking that warns about possible accuracy reduction
 //#define DISABLE_REDUCED_ACCURACY_WARNING
 
 // @section extruder
 
-#define DISABLE_E false           // For all extruders
-#define DISABLE_INACTIVE_EXTRUDER // Keep only the active extruder enabled
+#define DISABLE_E false             // Disable the extruder when not stepping
+#define DISABLE_INACTIVE_EXTRUDER   // Keep only the active extruder enabled
 
 // @section machine
 
@@ -1209,26 +1210,27 @@
  */
 //#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-#define NUM_RUNOUT_SENSORS 1 // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
-#define FIL_RUNOUT_STATE LOW // Pin state indicating that filament is NOT present.
-#define FIL_RUNOUT_PULLUP    // Use internal pullup for filament runout pins.
-//#define FIL_RUNOUT_PULLDOWN      // Use internal pulldown for filament runout pins.
+  #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
+  #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
+  #define FIL_RUNOUT_STATE     LOW        // Pin state indicating that filament is NOT present.
+  #define FIL_RUNOUT_PULLUP               // Use internal pullup for filament runout pins.
+  //#define FIL_RUNOUT_PULLDOWN           // Use internal pulldown for filament runout pins.
 
-// Set one or more commands to execute on filament runout.
-// (After 'M412 H' Marlin will ask the host to handle the process.)
-#define FILAMENT_RUNOUT_SCRIPT "M600"
+  // Set one or more commands to execute on filament runout.
+  // (After 'M412 H' Marlin will ask the host to handle the process.)
+  #define FILAMENT_RUNOUT_SCRIPT "M600"
 
-// After a runout is detected, continue printing this length of filament
-// before executing the runout script. Useful for a sensor at the end of
-// a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
-//#define FILAMENT_RUNOUT_DISTANCE_MM 25
+  // After a runout is detected, continue printing this length of filament
+  // before executing the runout script. Useful for a sensor at the end of
+  // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
+  //#define FILAMENT_RUNOUT_DISTANCE_MM 25
 
-#ifdef FILAMENT_RUNOUT_DISTANCE_MM
-// Enable this option to use an encoder disc that toggles the runout pin
-// as the filament moves. (Be sure to set FILAMENT_RUNOUT_DISTANCE_MM
-// large enough to avoid false positives.)
-//#define FILAMENT_MOTION_SENSOR
-#endif
+  #ifdef FILAMENT_RUNOUT_DISTANCE_MM
+    // Enable this option to use an encoder disc that toggles the runout pin
+    // as the filament moves. (Be sure to set FILAMENT_RUNOUT_DISTANCE_MM
+    // large enough to avoid false positives.)
+    //#define FILAMENT_MOTION_SENSOR
+  #endif
 #endif
 
 //===========================================================================
@@ -1403,7 +1405,7 @@
  * Commands to execute at the end of G29 probing.
  * Useful to retract or move the Z probe out of the way.
  */
-//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
+#define Z_PROBE_END_SCRIPT "G28\nM500"
 
 // @section homing
 
@@ -1691,6 +1693,37 @@
  * View the current statistics with M78.
  */
 //#define PRINTCOUNTER
+
+/**
+ * Password
+ *
+ * Set a numerical password for the printer which can be requested:
+ *
+ *  - When the printer boots up
+ *  - Upon opening the 'Print from Media' Menu
+ *  - When SD printing is completed or aborted
+ *
+ * The following G-codes can be used:
+ *
+ *  M510 - Lock Printer. Blocks all commands except M511.
+ *  M511 - Unlock Printer.
+ *  M512 - Set, Change and Remove Password.
+ *
+ * If you forget the password and get locked out you'll need to re-flash
+ * the firmware with the feature disabled, reset EEPROM, and (optionally)
+ * re-flash the firmware again with this feature enabled.
+ */
+//#define PASSWORD_FEATURE
+#if ENABLED(PASSWORD_FEATURE)
+  #define PASSWORD_LENGTH 4                 // (#) Number of digits (1-9). 3 or 4 is recommended
+  #define PASSWORD_ON_STARTUP
+  #define PASSWORD_UNLOCK_GCODE             // Unlock with the M511 P<password> command. Disable to prevent brute-force attack.
+  #define PASSWORD_CHANGE_GCODE             // Change the password with M512 P<old> S<new>.
+  //#define PASSWORD_ON_SD_PRINT_MENU       // This does not prevent gcodes from running
+  //#define PASSWORD_AFTER_SD_PRINT_END
+  //#define PASSWORD_AFTER_SD_PRINT_ABORT
+  //#include "Configuration_Secure.h"       // External file with PASSWORD_DEFAULT_VALUE
+#endif
 
 //=============================================================================
 //============================= LCD and SD support ============================
@@ -2139,13 +2172,20 @@
 //#define OLED_PANEL_TINYBOY2
 
 //
-// MKS OLED 1.3" 128 × 64 FULL GRAPHICS CONTROLLER
+// MKS OLED 1.3" 128×64 FULL GRAPHICS CONTROLLER
 // https://reprap.org/wiki/MKS_12864OLED
 //
 // Tiny, but very sharp OLED display
 //
 //#define MKS_12864OLED          // Uses the SH1106 controller (default)
 //#define MKS_12864OLED_SSD1306  // Uses the SSD1306 controller
+
+//
+// Zonestar OLED 128×64 FULL GRAPHICS CONTROLLER
+//
+//#define ZONESTAR_12864LCD           // Graphical (DOGM) with ST7920 controller
+//#define ZONESTAR_12864OLED          // 1.3" OLED with SH1106 controller (default)
+//#define ZONESTAR_12864OLED_SSD1306  // 0.96" OLED with SSD1306 controller
 
 //
 // Einstart S OLED SSD1306
@@ -2158,7 +2198,7 @@
 //#define OVERLORD_OLED
 
 //
-// FYSETC OLED 2.42" 128 × 64 FULL GRAPHICS CONTROLLER with WS2812 RGB
+// FYSETC OLED 2.42" 128×64 FULL GRAPHICS CONTROLLER with WS2812 RGB
 // Where to find : https://www.aliexpress.com/item/4000345255731.html
 //#define FYSETC_242_OLED_12864   // Uses the SSD1309 controller
 
@@ -2187,6 +2227,16 @@
 //#define TOUCH_UI_FTDI_EVE
 
 //
+// Touch-screen LCD for Anycubic printers
+//
+//#define ANYCUBIC_LCD_I3MEGA
+//#define ANYCUBIC_LCD_CHIRON
+#if EITHER(ANYCUBIC_LCD_I3MEGA, ANYCUBIC_LCD_CHIRON)
+  #define ANYCUBIC_LCD_SERIAL_PORT 3
+  //#define ANYCUBIC_LCD_DEBUG
+#endif
+
+//
 // Third-party or vendor-customized controller interfaces.
 // Sources should be installed in 'src/lcd/extensible_ui'.
 //
@@ -2199,6 +2249,28 @@
 //=============================================================================
 //=============================== Graphical TFTs ==============================
 //=============================================================================
+
+//
+// TFT display with optional touch screen
+// Color Marlin UI with standard menu system
+//
+//#define TFT_320x240
+//#define TFT_320x240_SPI
+//#define TFT_480x320
+//#define TFT_480x320_SPI
+
+//
+// Skip autodetect and force specific TFT driver
+// Mandatory for SPI screens with no MISO line
+// Available drivers are: ST7735, ST7789, ST7796, R61505, ILI9328, ILI9341, ILI9488
+//
+//#define TFT_DRIVER AUTO
+
+//
+// SPI display (MKS Robin Nano V2.0, MKS Gen L V2.0)
+// Upscaled 128x64 Marlin UI
+//
+//#define SPI_GRAPHICAL_TFT
 
 //
 // FSMC display (MKS Robin, Alfawise U20, JGAurora A5S, REXYZ A1, etc.)
@@ -2216,12 +2288,6 @@
 //#define TFT_LVGL_UI_FSMC  // Robin nano v1.2 uses FSMC
 #define TFT_LVGL_UI_SPI // Robin nano v2.0 uses SPI
 
-//
-// Anycubic Mega TFT (AI3M)
-//
-//#define ANYCUBIC_TFT_MODEL
-//#define ANYCUBIC_TFT_DEBUG
-
 //=============================================================================
 //============================  Other Controllers  ============================
 //=============================================================================
@@ -2234,20 +2300,22 @@
 //
 // ADS7843/XPT2046 ADC Touchscreen such as ILI9341 2.8
 //
-//#define TOUCH_BUTTONS
-#if ENABLED(TOUCH_BUTTONS)
-#define BUTTON_DELAY_EDIT 50  // (ms) Button repeat delay for edit screens
-#define BUTTON_DELAY_MENU 250 // (ms) Button repeat delay for menus
+//#define TOUCH_SCREEN
+#if ENABLED(TOUCH_SCREEN)
+  #define BUTTON_DELAY_EDIT  50 // (ms) Button repeat delay for edit screens
+  #define BUTTON_DELAY_MENU 250 // (ms) Button repeat delay for menus
 
-#define XPT2046_X_CALIBRATION 12316
-#define XPT2046_Y_CALIBRATION -8981
-#define XPT2046_X_OFFSET -43
-#define XPT2046_Y_OFFSET 257
+  #define TOUCH_SCREEN_CALIBRATION
+
+  //#define XPT2046_X_CALIBRATION 12316
+  //#define XPT2046_Y_CALIBRATION -8981
+  //#define XPT2046_X_OFFSET        -43
+  //#define XPT2046_Y_OFFSET        257
 #endif
 
 //
 // RepRapWorld REPRAPWORLD_KEYPAD v1.1
-// https://reprapworld.com/?products_details&products_id=202&cPath=1591_1626
+// https://reprapworld.com/products/electronics/ramps/keypad_v1_0_fully_assembled/
 //
 //#define REPRAPWORLD_KEYPAD
 //#define REPRAPWORLD_KEYPAD_MOVE_STEP 10.0 // (mm) Distance to move per key-press
@@ -2257,6 +2325,10 @@
 //=============================================================================
 
 // @section extras
+
+// Set number of user-controlled fans. Disable to use all board-defined fans.
+// :[1,2,3,4,5,6,7,8]
+//#define NUM_M106_FANS 1
 
 // Increase the FAN PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 //#define FAST_PWM_FAN
@@ -2334,18 +2406,19 @@
 // Support for Adafruit Neopixel LED driver
 //#define NEOPIXEL_LED
 #if ENABLED(NEOPIXEL_LED)
-#define NEOPIXEL_TYPE NEO_GRBW // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
-#define NEOPIXEL_PIN 4         // LED driving pin
-//#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
-//#define NEOPIXEL2_PIN    5
-#define NEOPIXEL_PIXELS 30      // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
-#define NEOPIXEL_IS_SEQUENTIAL  // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
-#define NEOPIXEL_BRIGHTNESS 127 // Initial brightness (0-255)
-//#define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
+  #define NEOPIXEL_TYPE   NEO_GRBW // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
+  #define NEOPIXEL_PIN     4       // LED driving pin
+  //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
+  //#define NEOPIXEL2_PIN    5
+  //#define NEOPIXEL2_INSERIES     // Default behavior is NeoPixel 2 in parallel
+  #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
+  #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
+  #define NEOPIXEL_BRIGHTNESS 127  // Initial brightness (0-255)
+  //#define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
 
-// Use a single Neopixel LED for static (background) lighting
-//#define NEOPIXEL_BKGD_LED_INDEX  0               // Index of the LED to use
-//#define NEOPIXEL_BKGD_COLOR { 255, 255, 255, 0 } // R, G, B, W
+  // Use a single Neopixel LED for static (background) lighting
+  //#define NEOPIXEL_BKGD_LED_INDEX  0               // Index of the LED to use
+  //#define NEOPIXEL_BKGD_COLOR { 255, 255, 255, 0 } // R, G, B, W
 #endif
 
 /**

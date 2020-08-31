@@ -130,8 +130,6 @@
   #define PREVIEW_LITTLE_PIC_SIZE  40910  // 400*100+9*101+1
   #define PREVIEW_SIZE      202720        // (PREVIEW_LITTLE_PIC_SIZE+800*200+201*9+1)
 
-  #define GCFG_FLAG_VALUE   0xEF
-
   // machine parameter ui
   #define PARA_UI_POS_X             10
   #define PARA_UI_POS_Y             50
@@ -175,7 +173,8 @@ extern char public_buf_m[100];
 extern char public_buf_l[30];
 
 typedef struct {
-  uint8_t spi_flash_flag;
+  uint32_t spi_flash_flag;
+  uint8_t disp_rotation_180;
   uint8_t multiple_language;
   uint8_t language;
   uint8_t leveling_mode;
@@ -197,7 +196,6 @@ typedef struct {
   float pausePosY;
   float pausePosZ;
   uint32_t curFilesize;
-  
 } CFG_ITMES;
 
 typedef struct {
@@ -238,6 +236,9 @@ typedef struct {
   uint32_t filament_unloading_time_cnt;
   float move_dist;
   float desireSprayerTempBak;
+  float current_x_position_bak;
+  float current_y_position_bak;
+  float current_e_position_bak;
 } UI_CFG;
 
 typedef enum {
@@ -443,6 +444,7 @@ extern void GUI_RefreshPage();
 extern void clear_cur_ui();
 extern void draw_return_ui();
 extern void sd_detection();
+extern void gCfg_to_spiFlah();
 extern void print_time_count();
 
 extern void LV_TASK_HANDLER();
